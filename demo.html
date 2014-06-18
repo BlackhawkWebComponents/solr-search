@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>solr-search Demo</title>
+
+    <script src="../platform/platform.js"></script>
+    <link rel="import" href="solr-search.html">
+
+</head>
+<body unresolved>
+
+    <p>A <code>&lt;solr-search&gt;</code> looks like this:</p>
+    <solr-search url="http://localhost:8983/solr/collection1/select/"
+            query="video"
+            facetFields="cat inStock">
+    </solr-search>
+
+    <template repeat="{{response.docs}}">
+        <div>{{name}}</div>
+    </template>
+
+<script>
+    document.addEventListener('polymer-ready', function() {
+        var solrSearch = document.querySelector("solr-search");
+        solrSearch.addEventListener("solr-response",
+                function(e) {
+                    console.log('got solr-response');
+                    console.log(JSON.stringify(e.detail.response));
+                    document.querySelector('template').model = {
+                        response: e.detail.response.response,
+                        facetCounts: e.detail.response.facetCounts
+                    };
+                }
+        );
+        solrSearch.go();
+    });
+</script>
+
+</body>
+</html>

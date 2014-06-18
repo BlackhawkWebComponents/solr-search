@@ -1,0 +1,29 @@
+{
+    "name": "solr-search",
+    "homepage": "http://blackhawkwebcomponents.github.io/solr-search",
+    "description": "",
+    "main": "solr-search.html",
+    "authors": [
+        "Rob Beers"
+    ],
+    "license": "Apache2",
+    "version": "0.0.1",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests",
+        "../"
+    ],
+    "keywords": [
+        "web-component",
+        "web-components",
+        "polymer",
+        "solr"
+    ],
+    "dependencies": {
+        "polymer": "Polymer/polymer#>=0.3.0 <1.0.0",
+        "core-ajax": "Polymer/core-ajax#>=0.3.0 <1.0.0"
+    }
+}
