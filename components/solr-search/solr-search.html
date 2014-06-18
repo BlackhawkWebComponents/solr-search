@@ -1,0 +1,87 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-ajax/core-ajax.html">
+
+<!--
+Element providing non visual api to solr search restful api.
+To get around Content Security Policy, must be deployed or symlinked in
+$SOLR_HOME/example/solr-webapp/webapp or enable CORS with Jetty
+https://github.com/LucidWorks/banana/tree/release/resources/enable-cors
+
+##### Example
+
+    <solr-search
+        url="http://localhost:8983/solr/collection1/select/"
+        query="video"
+        facetFields="cat inStock"
+    </solr-search>
+
+@element solr-search
+@blurb Element providing non visual api to solr search restful api
+@status alpha
+@url http://blackhawkwebcomponents.github.io/solr-search
+-->
+<polymer-element name="solr-search" attributes="url query facetFields response">
+    <template>
+        <core-ajax id="solr"
+                   url="{{url}}?indent=on&wt=json&q={{query}}{{facetFieldsParams}}"
+                   on-core-response="{{gotResponse}}"
+                   handleAs="json" ></core-ajax>
+    </template>
+    <script>
+        Polymer('solr-search', {
+            /**
+             * Fired when a response is received.
+             *
+             * @event solr-response
+             */
+
+            /**
+             * A url to the solr api.
+             * @attribute url
+             * @type string
+             */
+            url: '',
+            /**
+             * A query string to search solr.  It is what goes in q=
+             * @attribute query
+             * @type string
+             */
+            query: '',
+            /**
+             * A space separated list of fields to facet on
+             * @attribute facetFields
+             * @type string
+             */
+            facetFields: '',
+            facetFieldsParams:'',
+            facetFieldsChanged: function() {
+                this.facetFieldsParams = '';
+                var arr = this.facetFields.split(' ');
+                if (arr.length > 0) {
+                    this.facetFieldsParams = '&facet=true';
+                }
+                for (var i = 0; i < arr.length; ++i) {
+                    this.facetFieldsParams += '&facet.field='+arr[i].trim();
+                }
+            },
+            ready: function () {
+                this.response = {};
+            },
+            /**
+             * Performs an Ajax request to the specified URL.
+             *
+             * @method go
+             */
+            go: function() {
+                this.$.solr.go();
+            },
+            gotResponse: function(e, detail) {
+                var resp = detail.response;
+                this.response = resp;
+                this.fire('solr-response', {response: resp});
+            }
+
+        });
+    </script>
+</polymer-element>
+
